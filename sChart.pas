@@ -17,7 +17,6 @@ type
     High: Extended;
     Low: Extended;
     PrepPosition: Integer;
-    RealPosition: Integer;
   end;
 
   tChartSet = class
@@ -267,22 +266,6 @@ begin
       end;
     end;
 
-    if ChartSet.Trades <> nil then
-    begin
-      for i := 0 to ChartSet.Trades.Count - 1 do
-      begin
-        if ChartSet.Trades.List[i].High > SeriesMaxValue + Epsilon3 then
-        begin
-          SeriesMaxValue := ChartSet.Trades.List[i].High;
-        end;
-
-        if ChartSet.Trades.List[i].Low < SeriesMinValue - Epsilon3 then
-        begin
-          SeriesMinValue := ChartSet.Trades.List[i].Low;
-        end;
-      end;
-    end;
-
     {$ENDREGION}
 
     MultiplierCalculate;
@@ -293,17 +276,9 @@ begin
     begin
       for i := 0 to ChartSet.Trades.Count - 1 do
       begin
-        _TradeY := Round((SeriesMaxValue - ChartSet.Trades.List[i].High) * Multiplier) + 5;
-
-        TradeLineDraw(_TradeY, clRed);
-
         _TradeY := Round((SeriesMaxValue - ChartSet.Trades.List[i].Entry) * Multiplier) + 5;
 
         TradeLineDraw(_TradeY, clBlack);
-
-        _TradeY := Round((SeriesMaxValue - ChartSet.Trades.List[i].Low) * Multiplier) + 5;
-
-        TradeLineDraw(_TradeY, clBlue);
       end;
     end;
 
@@ -493,7 +468,6 @@ var
 begin
   if ChartSet.Gradation > 0 then
   begin
-    ChartSet.PaintBox.Canvas.Brush.Color := clWhite;
     ChartSet.PaintBox.Canvas.Pen.Color := clBlack;
 
     _Max := Round(Power10(SeriesMaxValue, ChartSet.Decimal)); // extended -> integer
